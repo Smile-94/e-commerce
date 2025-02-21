@@ -1,7 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db.models import (
+    CASCADE,
     BooleanField,
     CharField,
+    ForeignKey,
     ImageField,
     Index,
     PositiveIntegerField,
@@ -16,18 +18,24 @@ from apps.common.models import (
     ActiveStatusChoices,
     DjangoBaseModel,
 )
+from apps.products.models.category_model import Category
 
 
-# * <<--------------------------------------*** Product Category Table ***--------------------------------------->>
-class Category(DjangoBaseModel):
+# * <<-------------------------------------*** Product Sub-Category Model ***------------------------------------->>
+class SubCategory(DjangoBaseModel):
     """
-    product Category Table
+    Product Sub-Category Model
     """
 
-    category_name = CharField(max_length=255, unique=True)
+    category = ForeignKey(
+        Category, on_delete=CASCADE, related_name="sub_category_category"
+    )
+    sub_category_name = CharField(max_length=255, unique=True)
     parent_id = PositiveIntegerField(default=0, blank=True)
+    sub_category_icon = ImageField(
+        upload_to="product/sub_categories", blank=True, null=True
+    )
     is_client_usable = BooleanField(default=False, blank=True)
-    category_icon = ImageField(upload_to="product/categories", blank=True, null=True)
     active_status = CharField(
         max_length=10,
         choices=ActiveStatusChoices.choices,
@@ -38,47 +46,50 @@ class Category(DjangoBaseModel):
     description = TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Category"
-        verbose_name_plural = "Category"
+        verbose_name = "Sub-Category"
+        verbose_name_plural = "Sub-Category"
         ordering = ["-id"]
         indexes = [
             Index(fields=["id"]),
-            Index(fields=["category_name"]),
+            Index(fields=["sub_category_name"]),
             Index(fields=["is_client_usable"]),
             Index(fields=["active_status"]),
         ]
         app_label = "products"
-        db_table = "category"
+        db_table = "sub_category"
 
     # Clean up the instance before saving
     def clean(self):
         """
-        Custom validation to ensure category_name is unique.
-        Raises a ValidationError if a category with the same name already exists.
+        Custom validation to ensure sub_category_name is unique.
+        Raises a ValidationError if a sub-category with the same name already exists.
         """
-        # Check if a category with the same name already exists
+        # Check if a sub-category with the same name already exists
         if (
-            Category.objects.filter(category_name__iexact=self.category_name)
+            SubCategory.objects.filter(sub_category_name__iexact=self.sub_category_name)
             .exclude(id=self.id)
             .exists()
         ):
             raise ValidationError(
-                {"category_name": "A category with this name already exists."}
+                {"sub_category_name": "A sub-category with this name already exists."},
             )
 
-        # Check any special character exist in the category name
-        if self.category_name:
+        # Check any special character exist in the sub-category name
+        if self.sub_category_name:
             validate_special_character(
-                self.category_name, field_name="category_name"
-            )  # Validate category_name for special characters
+                self.sub_category_name,
+                field_name="sub_category_name",
+            )  # Validate sub_category_name for special characters
         else:
-            raise ValidationError({"category_name": "Category name cannot be empty."})
+            raise ValidationError(
+                {"sub_category_name": "Sub-category name cannot be empty."},
+            )
 
-        # Ensure category_icon is a valid image file
-        if self.category_icon:
+        # Ensure sub_category_icon is a valid image file
+        if self.sub_category_icon:
             get_validate_image_extensions(
                 images=[
-                    self.category_icon,
+                    self.sub_category_icon,
                 ],
                 valid_extensions={".jpg", ".jpeg", ".png", ".webp"},
             )
@@ -100,8 +111,8 @@ class Category(DjangoBaseModel):
         Returns the string representation of the model instance.
         :return: str: The string representation of the model instance.
         """
-        return f"{self.category_name}"
+        return f"{self.sub_category_name}"
 
     # Return a string representation of the model instance
     def __repr__(self):
-        return f"<Category: {self.category_name}> <id: {self.id}"
+        return f"<SubCategory: {self.sub_category_name}> <id: {self.id}"
