@@ -7,6 +7,7 @@ from django.db.models import (
     TextField,
     UniqueConstraint,
 )
+from django.utils.translation import gettext_lazy as _
 
 from apps.common.functions.validator.name_validator import validate_special_character
 from apps.common.models import (
@@ -56,9 +57,7 @@ class UnitAttribute(DjangoBaseModel):
             .exists()
         ):
             raise ValidationError(
-                {
-                    "attribute_name": "An attribute with this name already exists.",
-                },
+                _("An attribute with this name already exists."),
             )
 
         # Check any special character exist in the attribute_name
@@ -68,10 +67,9 @@ class UnitAttribute(DjangoBaseModel):
             )  # Validate attribute_name for special characters
         else:
             raise ValidationError(
-                {
-                    "attribute_name": "Attribute name cannot be empty.",
-                },
+                _("Attribute name cannot be empty."),
             )
+        super().clean()  # Call the parent's clean method
 
     # Save the instance after cleaning up
     def save(self, *args, **kwargs):
@@ -146,10 +144,10 @@ class UnitAttributeValue(DjangoBaseModel):
             )  # Validate attribute_value for special characters
         else:
             raise ValidationError(
-                {
-                    "unit_value": "Attribute value cannot be empty.",
-                },
+                _("Attribute value cannot be empty."),
             )
+
+        super().clean()  # Call the parent's clean method
 
     # Save the instance after cleaning up
     def save(self, *args, **kwargs):

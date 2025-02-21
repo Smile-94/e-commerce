@@ -9,6 +9,7 @@ from apps.products.admin.unit_admin import (
     UnitAttributeAdmin,
     UnitAttributeValueAdmin,
 )
+from apps.products.admin.vat_admin import VatAdmin
 
 __all__ = [
     "CategoryAdmin",
@@ -18,4 +19,5 @@ __all__ = [
     "BrandAdmin",
     "ManufacturerProductCategoryAdmin",
     "ManufacturerAdmin",
+    "VatAdmin",
 ]

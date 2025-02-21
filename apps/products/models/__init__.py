@@ -9,6 +9,7 @@ from apps.products.models.unit_model import (
     UnitAttribute,
     UnitAttributeValue,
 )
+from apps.products.models.vat_model import Vat
 
 __all__ = [
     "Category",
@@ -18,5 +19,6 @@ __all__ = [
     "Brand",
     "Manufacturer",
     "ManufacturerProductCategory",
+    "Vat",
     # Add more models here if needed.
 ]
