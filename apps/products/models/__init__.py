@@ -1,3 +1,4 @@
+from apps.products.models.brand_model import Brand
 from apps.products.models.category_model import Category
 from apps.products.models.sub_category_model import SubCategory
 from apps.products.models.unit_model import (
@@ -10,4 +11,5 @@ __all__ = [
     "SubCategory",
     "UnitAttribute",
     "UnitAttributeValue",
+    "Brand",
 ]
