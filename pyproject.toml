@@ -1,0 +1,120 @@
+[tool.poetry]
+name = "e_commerce"
+version = "1.0.0.0"
+package-mode = false
+description = "\"This a comprehencive djagno template\""
+authors = ["Sazzad Hossen <mshossen75@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.1.0"
+
+[tool.poe.tasks]
+dev = "python manage.py runserver 0.0.0.0:8000"
+migrations = "python manage.py makemigrations"
+migrate = "python manage.py migrate"
+app = "python manage.py startapp"
+project = "django-admin startproject"
+# Run a shell command
+clean = "rm -rf .pytest_cache __pycache__"
+collectstatic = "python manage.py collectstatic --noinput"
+
+[tool.poetry.dependencies]
+poethepoet = "^0.32.2"
+
+# PYTHON DEPENDENCIES
+python = "^3.12"
+
+# DJANGO DEPENDENCIES
+django = "^5.1.5"
+pillow = "^11.1.0"
+django-cors-headers = "^4.6.0"
+django-phonenumber-field = "^8.0.0"
+django-admin-rangefilter = "^0.13.2"
+
+# PYDANTIC DEPENDENCIES
+pydantic = "^2.10.6"
+pydantic-settings = "^2.7.1"
+pydantic-extra-types = "^2.10.2"
+
+# LOGGING DEPENDENCIES
+loguru = "^0.7.3"
+
+#REST DEPENDENCIES
+djangorestframework = "^3.15.2"
+markdown = "^3.7"
+django-filter = "^24.3"
+
+# DEVELOPMENT DEPENDENCIES
+ruff = "^0.9.4"
+pre-commit = "^4.1.0"
+black = "^25.1.0"
+django-debug-toolbar = "^5.0.1"
+
+# API DOCUMENTATION DEPENDENCIES
+drf-spectacular = "^0.28.0"
+
+# SERVER DEPENDENCIES
+uvicorn = "^0.34.0"
+granian = "^1.7.6"
+
+# CACHE DEPENDENCIES
+redis = "^5.2.1"
+
+# OTHER
+psycopg = "^3.2.4"
+pyseto = "^1.8.2"
+whitenoise = "^6.8.2"
+phonenumbers = "^8.13.54"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# Ruff Configuration File
+
+[tool.ruff]
+# Target Python version
+target-version = "py313"
+
+# Maximum line length before wrapping
+line-length = 150
+
+# Automatically fix issues where possible
+fix = true
+
+# Enable specific linting rules
+lint.select = [
+    "F",  # Pyflakes - Detects undefined names, unused imports, etc.
+    "E",  # pycodestyle - Enforces PEP 8 style errors
+    "W",  # Warning - Detects stylistic issues
+    "C",  # Complexity (mccabe+) & comprehensions - Detects overly complex functions and inefficient comprehensions
+    "UP", # pyupgrade - Suggests modern Python syntax improvements
+    "I",  # isort - Ensures proper import sorting
+]
+
+# Ignore specific linting rules
+lint.ignore = [
+    "E402",  # Ignore module-level import not at the top of the file
+    "UP006", # Ignore PEP 585 annotation enforcement
+    "UP007", # Ignore PEP 604 annotation enforcement
+    "E741",  # Ignore ambiguous variable names like 'l', 'O', etc.
+    # "UP035", # (Optional) Ignore deprecated assertion usage
+]
+
+# Per-file specific linting ignores
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "F401", # Ignore unused imports in __init__.py files
+    "F403", # Ignore star imports in __init__.py files
+]
+
+# McCabe complexity threshold (higher means allowing more complexity in functions)
+[tool.ruff.lint.mccabe]
+max-complexity = 1000  # Allow functions with high complexity (adjust if needed)
+
+# Pydocstyle settings (Enforces docstring conventions)
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"  # Follow NumPy-style docstrings for consistency
