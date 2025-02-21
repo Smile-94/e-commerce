@@ -32,8 +32,8 @@ class UnitAttribute(DjangoBaseModel):
     description = TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Product Unit Attribute"
-        verbose_name_plural = "Product Unit Attribute"
+        verbose_name = "Unit Attribute"
+        verbose_name_plural = "Unit Attribute"
         ordering = ["-id"]
         indexes = [
             Index(fields=["id"]),
@@ -41,7 +41,7 @@ class UnitAttribute(DjangoBaseModel):
             Index(fields=["active_status"]),
         ]
         app_label = "products"
-        db_table = "product_unit_attribute"
+        db_table = "unit_attribute"
 
     # Clean up the instance before saving
     def clean(self):
@@ -92,7 +92,7 @@ class UnitAttribute(DjangoBaseModel):
 
     # Return a string representation of the model instance
     def __repr__(self):
-        return f"<ProductUnitAttribute: {self.attribute_name}> <id: {self.id}"
+        return f"<UnitAttribute: {self.attribute_name}> <id: {self.id}"
 
 
 # * <<---------------------------------------------*** Product Unit Attribute Value ***-------------------->>
@@ -115,8 +115,8 @@ class UnitAttributeValue(DjangoBaseModel):
     description = TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Product Unit Value"
-        verbose_name_plural = "Product Unit Value"
+        verbose_name = "Unit Attribute Value"
+        verbose_name_plural = "Unit Attribute Value"
         ordering = ["-id"]
         indexes = [
             Index(fields=["id"]),
@@ -124,7 +124,7 @@ class UnitAttributeValue(DjangoBaseModel):
             Index(fields=["active_status"]),
         ]
         app_label = "products"
-        db_table = "product_unit_value"
+        db_table = "unit_attribute_value"
         constraints = [
             UniqueConstraint(
                 fields=["unit_attribute", "unit_value"],
