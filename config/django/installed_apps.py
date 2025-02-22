@@ -12,6 +12,7 @@ class InstalledAppsSettings(BaseSettings):
         "drf_spectacular",
         "corsheaders",
         "phonenumber_field",
+        "taggit",
     ]
 
     LOCAL_APPS: list[str] = [
