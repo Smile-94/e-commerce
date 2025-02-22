@@ -6,6 +6,7 @@ from apps.products.models.manufacturer_model import (
     ManufacturerProductCategory,
 )
 from apps.products.models.product_model import Product
+from apps.products.models.product_seo_model import ProductSeo
 from apps.products.models.sub_category_model import SubCategory
 from apps.products.models.unit_model import (
     UnitAttribute,
@@ -24,5 +25,6 @@ __all__ = [
     "Vat",
     "Product",
     "ProductImageGallery",
+    "ProductSeo",
     # Add more models here if needed.
 ]
