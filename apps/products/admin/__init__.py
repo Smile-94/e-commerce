@@ -12,6 +12,11 @@ from apps.products.admin.unit_admin import (
     UnitAttributeAdmin,
     UnitAttributeValueAdmin,
 )
+from apps.products.admin.variation_admin import ProductVariationAdmin
+from apps.products.admin.variation_attribute_admin import (
+    VariationAttributeAdmin,
+    VariationAttributeValueAdmin,
+)
 from apps.products.admin.vat_admin import VatAdmin
 
 __all__ = [
@@ -26,5 +31,8 @@ __all__ = [
     "ProductAdmin",
     "ProductImageGalleryAdmin",
     "ProductSeoAdmin",
+    "VariationAttributeAdmin",
+    "VariationAttributeValueAdmin",
+    "ProductVariationAdmin",
     # Add more admin classes here if needed.
 ]

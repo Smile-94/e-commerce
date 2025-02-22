@@ -12,6 +12,11 @@ from apps.products.models.unit_model import (
     UnitAttribute,
     UnitAttributeValue,
 )
+from apps.products.models.variation_attribute_model import (
+    VariationAttribute,
+    VariationAttributeValue,
+)
+from apps.products.models.variation_model import ProductVariation
 from apps.products.models.vat_model import Vat
 
 __all__ = [
@@ -26,5 +31,8 @@ __all__ = [
     "Product",
     "ProductImageGallery",
     "ProductSeo",
+    "VariationAttribute",
+    "VariationAttributeValue",
+    "ProductVariation",
     # Add more models here if needed.
 ]
