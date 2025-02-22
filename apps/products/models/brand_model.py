@@ -6,6 +6,7 @@ from django.db.models import (
     Index,
     TextField,
 )
+from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from apps.common.functions.validator.image_validator import (
@@ -66,7 +67,9 @@ class Brand(DjangoBaseModel):
             .exists()
         ):
             raise ValidationError(
-                {"brand_name": "A brand with this name already exists."}
+                _(
+                    "A brand with this name already exists.",
+                )
             )
 
         # Check any special character exist in the brand name
@@ -75,7 +78,11 @@ class Brand(DjangoBaseModel):
                 self.brand_name, field_name="brand_name"
             )  # Validate brand_name for special characters
         else:
-            raise ValidationError({"brand_name": "Brand name cannot be empty."})
+            raise ValidationError(
+                _(
+                    "Brand name cannot be empty.",
+                )
+            )
 
         # Ensure brand_logo is a valid image file
         if self.brand_logo:

@@ -9,6 +9,7 @@ from django.db.models import (
     PositiveIntegerField,
     TextField,
 )
+from django.utils.translation import gettext_lazy as _
 
 from apps.common.functions.validator.image_validator import (
     get_validate_image_extensions,
@@ -73,7 +74,7 @@ class SubCategory(DjangoBaseModel):
             .exists()
         ):
             raise ValidationError(
-                {"sub_category_name": "A sub-category with this name already exists."},
+                _("A sub-category with this name already exists."),
             )
 
         # Check any special character exist in the sub-category name
@@ -84,7 +85,7 @@ class SubCategory(DjangoBaseModel):
             )  # Validate sub_category_name for special characters
         else:
             raise ValidationError(
-                {"sub_category_name": "Sub-category name cannot be empty."},
+                _("Sub-category name cannot be empty."),
             )
 
         # Ensure sub_category_icon is a valid image file

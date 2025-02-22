@@ -7,6 +7,7 @@ from django.db.models import (
     PositiveIntegerField,
     TextField,
 )
+from django.utils.translation import gettext_lazy as _
 
 from apps.common.functions.validator.image_validator import (
     get_validate_image_extensions,
@@ -63,7 +64,7 @@ class Category(DjangoBaseModel):
             .exists()
         ):
             raise ValidationError(
-                {"category_name": "A category with this name already exists."}
+                _("A category with this name already exists."),
             )
 
         # Check any special character exist in the category name
@@ -72,7 +73,11 @@ class Category(DjangoBaseModel):
                 self.category_name, field_name="category_name"
             )  # Validate category_name for special characters
         else:
-            raise ValidationError({"category_name": "Category name cannot be empty."})
+            raise ValidationError(
+                _(
+                    "Category name cannot be empty.",
+                )
+            )
 
         # Ensure category_icon is a valid image file
         if self.category_icon:

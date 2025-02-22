@@ -8,6 +8,7 @@ from django.db.models import (
     TextChoices,
     TextField,
 )
+from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from apps.common.functions.validator.image_validator import (
@@ -73,9 +74,7 @@ class ManufacturerProductCategory(DjangoBaseModel):
             .exists()
         ):
             raise ValidationError(
-                {
-                    "product_category": "A product category with this name already exists."
-                },
+                _("A product category with this name already exists."),
             )
 
         # Check any special character exist in the product_category name
@@ -86,7 +85,7 @@ class ManufacturerProductCategory(DjangoBaseModel):
             )  # Validate product_category name for special characters
         else:
             raise ValidationError(
-                {"product_category": "Product category name cannot be empty."},
+                _("Product category name cannot be empty."),
             )
 
         super().clean()  # Call the parent's clean method
@@ -173,9 +172,7 @@ class Manufacturer(DjangoBaseModel):
             .exists()
         ):
             raise ValidationError(
-                {
-                    "manufacturer_name": "A manufacturer with this name already exists.",
-                },
+                _("A manufacturer with this name already exists."),
             )
 
         # Check any special character exist in the manufacturer_name name
@@ -186,7 +183,7 @@ class Manufacturer(DjangoBaseModel):
             )  # Validate manufacturer_name name for special characters
         else:
             raise ValidationError(
-                {"manufacturer_name": "Manufacturer name cannot be empty."},
+                _("Manufacturer name cannot be empty."),
             )
 
         # Validate the manufacturer_logo field
