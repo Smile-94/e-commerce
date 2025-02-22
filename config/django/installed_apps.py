@@ -19,6 +19,7 @@ class InstalledAppsSettings(BaseSettings):
         "apps.user.apps.UserConfig",
         "apps.common.apps.CommonConfig",
         "apps.products.apps.ProductsConfig",
+        "apps.medicines.apps.MedicinesConfig",
     ]
 
     INSTALLED_APPS: list[str] = [
