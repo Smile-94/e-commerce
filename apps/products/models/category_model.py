@@ -58,7 +58,7 @@ class Category(DjangoBaseModel):
         """
         # Check if a category with the same name already exists
         if (
-            Category.objects.filter(category_name__iexact=self.category_name)
+            self.__class__.objects.filter(category_name__iexact=self.category_name)
             .exclude(id=self.id)
             .exists()
         ):

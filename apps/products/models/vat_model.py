@@ -77,7 +77,11 @@ class Vat(DjangoBaseModel):
         Raises a ValidationError if a vat with the same vat_amount already exists.
         """
         # Check if a vat with the same vat_amount already exists
-        if Vat.objects.filter(vat_amount=self.vat_amount).exclude(id=self.id).exists():
+        if (
+            self.__class__.objects.filter(vat_amount=self.vat_amount)
+            .exclude(id=self.id)
+            .exists()
+        ):
             raise ValidationError(
                 _("A VAT with the same amount already exists"),
             )

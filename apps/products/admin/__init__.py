@@ -4,6 +4,7 @@ from apps.products.admin.manufacturer_admin import (
     ManufacturerAdmin,
     ManufacturerProductCategoryAdmin,
 )
+from apps.products.admin.product_admin import ProductAdmin
 from apps.products.admin.sub_category_admin import SubCategoryAdmin
 from apps.products.admin.unit_admin import (
     UnitAttributeAdmin,
@@ -20,4 +21,6 @@ __all__ = [
     "ManufacturerProductCategoryAdmin",
     "ManufacturerAdmin",
     "VatAdmin",
+    "ProductAdmin",
+    # Add more admin classes here if needed.
 ]

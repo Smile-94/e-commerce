@@ -4,6 +4,7 @@ from apps.products.models.manufacturer_model import (
     Manufacturer,
     ManufacturerProductCategory,
 )
+from apps.products.models.product_model import Product
 from apps.products.models.sub_category_model import SubCategory
 from apps.products.models.unit_model import (
     UnitAttribute,
@@ -20,5 +21,6 @@ __all__ = [
     "Manufacturer",
     "ManufacturerProductCategory",
     "Vat",
+    "Product",
     # Add more models here if needed.
 ]

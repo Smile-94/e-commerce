@@ -61,7 +61,7 @@ class Brand(DjangoBaseModel):
         """
         # Check if a brand with the same name already exists
         if (
-            Brand.objects.filter(brand_name__iexact=self.brand_name)
+            self.__class__.objects.filter(brand_name__iexact=self.brand_name)
             .exclude(id=self.id)
             .exists()
         ):

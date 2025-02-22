@@ -66,7 +66,9 @@ class SubCategory(DjangoBaseModel):
         """
         # Check if a sub-category with the same name already exists
         if (
-            SubCategory.objects.filter(sub_category_name__iexact=self.sub_category_name)
+            self.__class__.objects.filter(
+                sub_category_name__iexact=self.sub_category_name
+            )
             .exclude(id=self.id)
             .exists()
         ):

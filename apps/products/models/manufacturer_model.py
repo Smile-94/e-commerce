@@ -66,7 +66,7 @@ class ManufacturerProductCategory(DjangoBaseModel):
         """
         # Check if a product category with the same name already exists
         if (
-            ManufacturerProductCategory.objects.filter(
+            self.__class__.objects.filter(
                 product_category__iexact=self.product_category
             )
             .exclude(id=self.id)
