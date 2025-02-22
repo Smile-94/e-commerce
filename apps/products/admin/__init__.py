@@ -1,5 +1,6 @@
 from apps.products.admin.brand_admin import BrandAdmin
 from apps.products.admin.category_admin import CategoryAdmin
+from apps.products.admin.image_gallery_admin import ProductImageGalleryAdmin
 from apps.products.admin.manufacturer_admin import (
     ManufacturerAdmin,
     ManufacturerProductCategoryAdmin,
@@ -22,5 +23,6 @@ __all__ = [
     "ManufacturerAdmin",
     "VatAdmin",
     "ProductAdmin",
+    "ProductImageGalleryAdmin",
     # Add more admin classes here if needed.
 ]

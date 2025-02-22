@@ -1,5 +1,6 @@
 from apps.products.models.brand_model import Brand
 from apps.products.models.category_model import Category
+from apps.products.models.image_gallery_model import ProductImageGallery
 from apps.products.models.manufacturer_model import (
     Manufacturer,
     ManufacturerProductCategory,
@@ -22,5 +23,6 @@ __all__ = [
     "ManufacturerProductCategory",
     "Vat",
     "Product",
+    "ProductImageGallery",
     # Add more models here if needed.
 ]
