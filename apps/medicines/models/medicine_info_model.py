@@ -1,19 +1,17 @@
-from common.models import ActiveStatusChoices, DjangoBaseModel
-
 # Django Model Fields
 from django.db.models import (
     CASCADE,
-    SET_NULL,
     BooleanField,
     CharField,
-    ForeignKey,
     ImageField,
     Index,
+    ManyToManyField,
     OneToOneField,
     TextField,
 )
 from django.utils.translation import gettext_lazy as _
 
+from apps.common.models import ActiveStatusChoices, DjangoBaseModel
 from apps.medicines.models.generic_name_model import GenericNameInformation
 
 # Import other models
@@ -27,12 +25,10 @@ class MedicineInfo(DjangoBaseModel):
     """
 
     product = OneToOneField(Product, related_name="medicine_info", on_delete=CASCADE)
-    generic_name = ForeignKey(
+    generic_name = ManyToManyField(
         GenericNameInformation,
         related_name="medicine_generic_name",
-        on_delete=SET_NULL,
         blank=True,
-        null=True,
     )
     is_required_prescription = BooleanField(default=True)
     pharmacology = TextField(blank=True, null=True)
@@ -77,4 +73,4 @@ class MedicineInfo(DjangoBaseModel):
         return f"{self.product.name}"
 
     def __repr__(self):
-        return f"<MedicineInfo: {self.product.name}>"
+        return f"<MedicineInfo: {self.product.product_name}>"
