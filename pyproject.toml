@@ -33,7 +33,7 @@ django-phonenumber-field = "^8.0.0"
 django-admin-rangefilter = "^0.13.2"
 
 # PYDANTIC DEPENDENCIES
-pydantic = "^2.10.6"
+pydantic = {extras = ["email"], version = "^2.10.6"}
 pydantic-settings = "^2.7.1"
 pydantic-extra-types = "^2.10.2"
 

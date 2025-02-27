@@ -5,6 +5,7 @@ from django.db.models import (
     ImageField,
     Index,
     TextField,
+    URLField,
 )
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -30,6 +31,7 @@ class Brand(DjangoBaseModel):
         max_length=100, default="Bangladesh", blank=True, null=True
     )
     brand_logo = ImageField(upload_to="product/brands", blank=True, null=True)
+    web_url = URLField(blank=True, null=True)
     contact_number = PhoneNumberField(blank=True, null=True)
     brand_email = EmailField(max_length=255, blank=True, null=True)
     active_status = CharField(
