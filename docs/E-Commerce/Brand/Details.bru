@@ -1,0 +1,15 @@
+meta {
+  name: Details
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/products/brand/details/1/?field_list=id, brand_name, origin_country
+  body: none
+  auth: none
+}
+
+params:query {
+  field_list: id, brand_name, origin_country
+}

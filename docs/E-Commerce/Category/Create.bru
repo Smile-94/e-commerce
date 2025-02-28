@@ -1,0 +1,20 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/products/category/create/
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  category_name: Food
+  parent_id: 0
+  is_client_usable: False
+  active_status: active
+  description: This is short but amazing description
+  ~category_icon: @file(/home/sazzad/Downloads/medicine.png)
+}

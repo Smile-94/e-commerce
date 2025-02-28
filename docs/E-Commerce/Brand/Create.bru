@@ -1,0 +1,22 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/products/brand/create/
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  brand_name: Square
+  origin_country: Bangladesh
+  web_url: https://wwwe.intel.com
+  contact_number: +8801920252203
+  brand_email: intel@intel.com
+  active_status: active
+  description: This is short but amazing description
+  brand_logo: @file(/home/sazzad/Downloads/bd_beauty_glamours.jpeg)
+}

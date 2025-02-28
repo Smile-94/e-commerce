@@ -1,0 +1,20 @@
+meta {
+  name: List
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/products/brand/list/?limit=10&offset=0&ordering=id&active_status=active&field_list=id, brand_name&query=Intel
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 10
+  offset: 0
+  ordering: id
+  active_status: active
+  field_list: id, brand_name
+  query: Intel
+}
