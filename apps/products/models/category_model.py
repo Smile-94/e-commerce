@@ -85,7 +85,7 @@ class Category(DjangoBaseModel):
                 images=[
                     self.category_icon,
                 ],
-                valid_extensions={".jpg", ".jpeg", ".png", ".webp"},
+                valid_extensions={".jpg", ".jpeg", ".png", ".svg", ".webp"},
             )
 
         super().clean()  # Call the parent's clean method

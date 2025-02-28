@@ -1,0 +1,21 @@
+meta {
+  name: List
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/products/category/list/?limit=10&offset=0&from_date=2025-02-28&to_date=2025-02-28&ordering=-id&query
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 10
+  offset: 0
+  from_date: 2025-02-28
+  to_date: 2025-02-28
+  ordering: -id
+  query: 
+  ~field_list: id, category_name
+}

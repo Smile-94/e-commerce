@@ -32,36 +32,36 @@ from apps.common.pagination.pagination import (
     LimitOffsetPagination,
     get_paginated_response,
 )
-from apps.products.filters.brand_filter import BrandSearchFilter
+from apps.products.filters.category_filter import CategorySearchFilter
 
 # Models Import
-from apps.products.models.brand_model import Brand
+from apps.products.models.category_model import Category
 
 # Import Serializer
-from apps.products.serializers.brand_serializer import (
-    BrandSerializer,
-    BrandUpdateSerializer,
+from apps.products.serializers.category_serializer import (
+    CategorySerializer,
+    CategoryUpdateSerializer,
 )
 
 # API TAGS Name
-MODEL_NAME = "Brand"
-URL_PREFIX = "brand"
-TAG_NAME = "Brand [v1]"
+MODEL_NAME = "Category"
+URL_PREFIX = "category"
+TAG_NAME = "Category [v1]"
 
 
-# * <<---------------------*** CREATE PRODUCT BRAND API VIEW ***--------------------->>
+# * <<---------------------*** CREATE PRODUCT CATEGORY API VIEW ***--------------------->>
 @allowed_methods("POST")
-class CreateProductBrandAPIView(APIView):
+class CreateProductCategoryAPIView(APIView):
     """
-    API endpoint to create a new product Brand.
+    API endpoint to create a new product Category.
     """
 
     # TODO:
     # Add permissions Class
 
     def __init__(self, *args, **kwargs):
-        self.model_class = Brand
-        self.serializer_class = BrandSerializer
+        self.model_class = Category
+        self.serializer_class = CategorySerializer
         super().__init__(*args, **kwargs)
 
     # API documentation
@@ -77,16 +77,15 @@ class CreateProductBrandAPIView(APIView):
         examples=[
             ResponseAPIDocumentation.get_201_response(
                 example={
-                    "id": 1,
-                    "brand_name": "Care-Box",
-                    "origin_country": "Bangladesh",
-                    "web_url": "https://www.care-box.com",
-                    "brand_logo": "/brand/brand.jpg",
-                    "contact_number": "+8801981701810",
-                    "brand_email": "my@care-box.com",
-                    "description": "This category contains medicines.",
+                    "id": 2,
+                    "category_name": "Food",
+                    "parent_id": 0,
+                    "is_client_usable": False,
+                    "category_icon": None,
                     "active_status": "active",
-                    "created_at": "2024-10-29",
+                    "description": "This is short but amazing description",
+                    "created_at": "2025-02-28T17:55:55.185021Z",
+                    "updated_at": "2025-02-28T17:55:55.185058Z",
                 },
             ),
             ResponseAPIDocumentation.get_400_response(),
@@ -97,7 +96,7 @@ class CreateProductBrandAPIView(APIView):
     def post(self, request, *args, **kwargs):
         try:
             if request.data:
-                brand_name = request.data.get("brand_name", None)
+                category_name = request.data.get("category_name", None)
                 active_status = request.data.get("active_status", None)
 
                 # Get all valid field names from the brand model
@@ -124,9 +123,9 @@ class CreateProductBrandAPIView(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 # Check required fields in request data
-                if not brand_name:
+                if not category_name:
                     logger.warning(
-                        f"WARNING({self.__class__.__name__}):--------->> brand_name is required in request data."
+                        f"WARNING({self.__class__.__name__}):--------->> category_name is required in request data."
                     )
 
                     # Return The required fields missing errors
@@ -137,7 +136,7 @@ class CreateProductBrandAPIView(APIView):
                             message="Brand Name is required",
                             client=ResponseClient.DEVELOPER,
                             description={
-                                "brand_name": "brand_name missing",
+                                "category_name": "brand_name missing",
                                 "info": "'brand_name' is required to create new brand object",
                             },
                         ).model_dump(),
@@ -172,7 +171,9 @@ class CreateProductBrandAPIView(APIView):
                         )
 
                 # Check the product name is exist or not, if not exist then create a new brand object
-                if not self.model_class.objects.filter(brand_name=brand_name).exists():
+                if not self.model_class.objects.filter(
+                    category_name=category_name
+                ).exists():
                     # Parse and validate data using Pydantic
                     serializer = self.serializer_class(data=request.data)
 
@@ -196,7 +197,7 @@ class CreateProductBrandAPIView(APIView):
 
                     else:
                         logger.error(
-                            f"ERROR({self.__class__.__name__}): brand create serializer error {serializer.errors}",
+                            f"ERROR({self.__class__.__name__}): Category create serializer error {serializer.errors}",
                         )
 
                         # Return Serializers Error Response
@@ -206,12 +207,16 @@ class CreateProductBrandAPIView(APIView):
                                 type=ErrorType.ERROR,
                                 message="Data Validation Error",
                                 client=ResponseClient.DEVELOPER,
-                                description={"errors": serializer.errors},
+                                description={
+                                    "errors": serializer.errors,
+                                    "info": "Check your request data and fix, provide valid data",
+                                },
                             ).model_dump(),
                             status=status.HTTP_400_BAD_REQUEST,
                         )
 
                 else:
+                    # Unique object warning response
                     return Response(
                         ErrorResponse(
                             status=status.HTTP_400_BAD_REQUEST,
@@ -219,8 +224,8 @@ class CreateProductBrandAPIView(APIView):
                             message=f"{self.model_class.__name__} name already exists",
                             client=ResponseClient.USER,
                             description={
-                                "brand_name": f"{brand_name}",
-                                "info": f"Brand name '{brand_name}' already exists, try a different brand_name",
+                                "brand_name": f"{category_name}",
+                                "info": f"category name '{category_name}' already exists, try a different category_name",
                             },
                         ).model_dump(),
                         status=status.HTTP_400_BAD_REQUEST,
@@ -228,19 +233,18 @@ class CreateProductBrandAPIView(APIView):
 
             else:
                 return Response(
+                    # Empty body data response
                     ErrorResponse(
                         status=status.HTTP_400_BAD_REQUEST,
                         type=ErrorType.WARNING,
                         message="No Data Provided, Please provide payload data",
                         client=ResponseClient.DEVELOPER,
                         description={
-                            "brand_name": "str, This field is required",
-                            "origin_country": "str, This field is not required.",
-                            "web_url": "url, optional",
-                            "brand_logo": "ImageField, optional",
-                            "contact_number": "str, optional",
-                            "brand_email": "str, optional",
-                            "active_status": "choice, optional, default='active'",
+                            "category_name": "str, This field is required",
+                            "parent_id": "int, This field is not optional, default=0.",
+                            "is_client_usable": "bool, This field is optional, default=False",
+                            "category_icon": "ImageField, optional",
+                            "active_status": "choice, optional, default='active', and choices must be 'active', or 'inactive',",
                             "description": "str, optional",
                         },
                     ).model_dump(),
@@ -249,8 +253,9 @@ class CreateProductBrandAPIView(APIView):
 
         except Exception as e:
             logger.error(
-                f"----->>Error occurred while creating product Brand: {str(e)}",
+                f"ERROR({self.__class__.__name__})----->>Error occurred while creating product Category: {str(e)}",
             )
+            # Un excepted error response
             return Response(
                 ErrorResponse(
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -259,7 +264,7 @@ class CreateProductBrandAPIView(APIView):
                     client=ResponseClient.DEVELOPER,
                     description={
                         "error": str(e),
-                        "info": "An unexpected error occurred while creating brand",
+                        "info": "An unexpected error occurred while creating Category",
                         "message": "Please Contact with the support, we will get back to you soon",
                     },
                 ).model_dump(),
@@ -267,9 +272,9 @@ class CreateProductBrandAPIView(APIView):
             )
 
 
-# * <<---------------------*** UPDATE PRODUCT BRAND API VIEW ***--------------------->>
+# * <<---------------------*** UPDATE PRODUCT CATEGORY API VIEW ***--------------------->>
 @allowed_methods("PUT", "PATCH")
-class UpdateProductBrandAPIView(APIView):
+class UpdateProductCategoryAPIView(APIView):
     """
     API endpoint to update an existing product category.
     """
@@ -278,8 +283,8 @@ class UpdateProductBrandAPIView(APIView):
     # Add permissions Class
 
     def __init__(self, *args, **kwargs):
-        self.model_class = Brand
-        self.serializer_class = BrandUpdateSerializer
+        self.model_class = Category
+        self.serializer_class = CategoryUpdateSerializer
         super().__init__(*args, **kwargs)
 
     # Update Product Category API Documentation.
@@ -287,7 +292,7 @@ class UpdateProductBrandAPIView(APIView):
         summary=f"API endpoint for updating a product {MODEL_NAME}",
         description=f"Provide all necessary fields and values to update a product {MODEL_NAME}",
         tags=[TAG_NAME],
-        request=BrandUpdateSerializer,
+        request=CategoryUpdateSerializer,
         responses={
             "200": UpdateResponse,
             "400": ErrorResponse,
@@ -298,7 +303,7 @@ class UpdateProductBrandAPIView(APIView):
                 message=f"{MODEL_NAME} Updated Successfully",
                 example={
                     "info": "following fields are updated",
-                    "fields": ["brand_name", "brand_logo"],
+                    "fields": ["category_name", "category_icon"],
                 },
             ),
             ResponseAPIDocumentation.get_404_response(),
@@ -313,7 +318,7 @@ class UpdateProductBrandAPIView(APIView):
         summary=f"API endpoint for partially updating a product {MODEL_NAME}",
         description=f"Provide specific fields and values to update part of a product {MODEL_NAME}",
         tags=[TAG_NAME],
-        request=BrandUpdateSerializer,
+        request=CategoryUpdateSerializer,
         responses={
             "200": UpdateResponse,
             "400": ErrorResponse,
@@ -324,7 +329,7 @@ class UpdateProductBrandAPIView(APIView):
                 message=f"{MODEL_NAME} Partially Updated Successfully",
                 example={
                     "info": "following fields are updated",
-                    "fields": ["brand_name", "brand_logo"],
+                    "fields": ["category_name", "category_icon"],
                 },
             ),
             ResponseAPIDocumentation.get_404_response(),
@@ -338,8 +343,7 @@ class UpdateProductBrandAPIView(APIView):
     def _update_category(self, request, id, partial):
         try:
             if request.data:
-                # Request field for validation
-                brand_name = request.data.get("brand_name", None)
+                category_name = request.data.get("category_name", None)
                 active_status = request.data.get("active_status", None)
                 invalid_fields = get_validated_request_fields(
                     model_class=self.model_class,
@@ -357,7 +361,7 @@ class UpdateProductBrandAPIView(APIView):
                             client=ResponseClient.DEVELOPER,
                             description={
                                 "invalid_fields": invalid_fields,
-                                "message": "Some field names are not valid for The Product Category.",
+                                "message": "Some field names are not valid for The Product Brand.",
                             },
                         ).model_dump(),
                         status=status.HTTP_400_BAD_REQUEST,
@@ -388,8 +392,15 @@ class UpdateProductBrandAPIView(APIView):
                             status=status.HTTP_400_BAD_REQUEST,
                         )
 
-                if brand_name:
-                    if self.model_class.objects.filter(brand_name=brand_name).exists():
+                if category_name:
+                    # Check if the category name already exists
+                    if self.model_class.objects.filter(
+                        category_name=category_name
+                    ).exists():
+                        logger.warning(
+                            f"WARNING({self.__class__.__name__})----->>Category name already exists: {category_name}",
+                        )
+                        # Unique object warning response
                         return Response(
                             ErrorResponse(
                                 status=status.HTTP_400_BAD_REQUEST,
@@ -397,13 +408,13 @@ class UpdateProductBrandAPIView(APIView):
                                 message=f"{self.model_class.__name__} name already exists",
                                 client=ResponseClient.USER,
                                 description={
-                                    "category_name": f"{brand_name}",
-                                    "info": f"Category name '{brand_name}' already exists, try a different brand_name",
+                                    "brand_name": f"{category_name}",
+                                    "info": f"category name '{category_name}' already exists, try a different category_name",
                                 },
                             ).model_dump(),
                             status=status.HTTP_400_BAD_REQUEST,
                         )
-                # Check if the category exists
+
                 try:
                     data = self.model_class.objects.get(id=id)
                     validated_data = self.serializer_class(
@@ -468,17 +479,15 @@ class UpdateProductBrandAPIView(APIView):
                         ).model_dump(),
                         status=status.HTTP_404_NOT_FOUND,
                     )
-
             else:
-                # Return Response for if no data is provided
                 return Response(
                     ErrorResponse(
                         status=status.HTTP_400_BAD_REQUEST,
                         type=ErrorType.WARNING,
-                        message="No data provided in request",
+                        message="No data provided in the request",
                         client=ResponseClient.DEVELOPER,
                         description={
-                            "info": "Please provide valid data in the request, one or more fields to update",
+                            "info": "No data provided in the request, provide one or more valid necessary dta to update",
                         },
                     ).model_dump(),
                     status=status.HTTP_400_BAD_REQUEST,
@@ -507,11 +516,11 @@ class UpdateProductBrandAPIView(APIView):
             )
 
 
-# * <<------------------------*** PRODUCT BRAND LIST API VIEW ***------------------------->>
+# * <<------------------------*** PRODUCT CATEGORY LIST API VIEW ***------------------------->>
 @allowed_methods("GET")
-class ListProductBrandAPIView(APIView):
+class ListProductCategoryAPIView(APIView):
     """
-    API endpoint to retrieve a list of all product Brand.
+    API endpoint to retrieve a list of all product categories.
     """
 
     # TODO:
@@ -522,9 +531,9 @@ class ListProductBrandAPIView(APIView):
         max_limit = None
 
     def __init__(self, *args, **kwargs):
-        self.model_class = Brand
-        self.serializer_class = BrandSerializer
-        self.filter_class = BrandSearchFilter
+        self.model_class = Category
+        self.serializer_class = CategorySerializer
+        self.filter_class = CategorySearchFilter
         super().__init__(*args, **kwargs)
 
     @extend_schema(
@@ -538,16 +547,16 @@ class ListProductBrandAPIView(APIView):
             ParameterAPIDocumentation.get_to_date_parameter(),
             ParameterAPIDocumentation.get_active_status_parameter(),
             ParameterAPIDocumentation.get_query_parameter(
-                supported_fields="id, brand_name, origin_country, contact_number, brand_email",
-                example_value="care-box",
+                supported_fields="id,category_name",
+                example_value="medicine",
             ),
             ParameterAPIDocumentation.get_ordering_parameter(
-                ordering_fields="id, brand_name, origin_country",
+                ordering_fields="id, category_name, created_at, updated_at",
                 example_value="-id",
             ),
             ParameterAPIDocumentation.get_field_list_parameter(
-                fields_list="id,brand_name,origin_country,contact_number,brand_email,brand_logo,active_status,created_at,updated_at and description",
-                example_value="id, brand_name, origin_country, contact_number,",
+                fields_list="id, category_name, parent_id, is_client_usable, category_icon, active_status, description, created_at, updated_at",
+                example_value="id, category_name, parent_id, is_client_usable",
             ),
         ],
         responses={
@@ -565,28 +574,24 @@ class ListProductBrandAPIView(APIView):
                     "previous": None,
                     "results": [
                         {
-                            "id": 4,
-                            "created_at": "2025-02-25T18:38:25.877080Z",
-                            "updated_at": "2025-02-25T18:38:25.877140Z",
-                            "brand_name": "Square",
-                            "origin_country": "Bangladesh",
-                            "brand_logo": "/media/product/brands/bd_beauty_glamours_Ka2ngaB.jpeg",
-                            "web_url": "https://wwwe.intel.com",
-                            "contact_number": "+8801920252203",
-                            "brand_email": "intel@intel.com",
+                            "id": 2,
+                            "created_at": "2025-02-28T17:55:55.185021Z",
+                            "updated_at": "2025-02-28T17:55:55.185058Z",
+                            "category_name": "Food",
+                            "parent_id": 0,
+                            "is_client_usable": False,
+                            "category_icon": None,
                             "active_status": "active",
                             "description": "This is short but amazing description",
                         },
                         {
-                            "id": 3,
-                            "created_at": "2025-02-25T18:35:10.267453Z",
-                            "updated_at": "2025-02-25T18:35:10.267609Z",
-                            "brand_name": "ASUS",
-                            "origin_country": "Bangladesh",
-                            "brand_logo": "/media/product/brands/brand.png",
-                            "web_url": "https://wwwe.intel.com",
-                            "contact_number": "+8801920252203",
-                            "brand_email": "intel@intel.com",
+                            "id": 1,
+                            "created_at": "2025-02-28T17:54:05.214668Z",
+                            "updated_at": "2025-02-28T18:42:40.617574Z",
+                            "category_name": "Medicine",
+                            "parent_id": 0,
+                            "is_client_usable": False,
+                            "category_icon": "/media/product/categories/medicine_c1FVxjf.png",
                             "active_status": "active",
                             "description": "This is short but amazing description",
                         },
@@ -737,7 +742,7 @@ class ListProductBrandAPIView(APIView):
         except Exception as e:
             # Handle unexpected errors
             logger.error(
-                f"ERROR({self.__class__.__name__})---------------->> Error occurred while retrieving brand: {str(e)}",
+                f"ERROR({self.__class__.__name__})---------------->> Error occurred while retrieving category: {str(e)}",
             )
 
             return Response(
@@ -748,7 +753,7 @@ class ListProductBrandAPIView(APIView):
                     client=ResponseClient.DEVELOPER,
                     description={
                         "error": str(e),
-                        "info": "An unexpected error occurred while creating brand",
+                        "info": "An unexpected error occurred while retrieving brand",
                         "message": "Please Contact with the support, we will get back to you soon",
                     },
                 ).model_dump(),
@@ -756,19 +761,19 @@ class ListProductBrandAPIView(APIView):
             )
 
 
-# * <<---------------------*** PRODUCT BRAND DETAIL API VIEW ***--------------------->>
+# * <<---------------------*** PRODUCT CATEGORY DETAIL API VIEW ***--------------------->>
 @allowed_methods("GET")
-class RetrieveProductBrandAPIView(APIView):
+class RetrieveProductCategoryAPIView(APIView):
     """
-    API endpoint to retrieve a specific product brand.
+    API endpoint to retrieve a specific product category.
     """
 
     # TODO:
     # Add permissions Class
 
     def __init__(self, **kwargs):
-        self.model_class = Brand
-        self.serializer_class = BrandSerializer
+        self.model_class = Category
+        self.serializer_class = CategorySerializer
         super().__init__(**kwargs)
 
     # API Documentation for sub-category details
@@ -778,8 +783,8 @@ class RetrieveProductBrandAPIView(APIView):
         tags=[TAG_NAME],
         parameters=[
             ParameterAPIDocumentation.get_field_list_parameter(
-                fields_list="id,brand_name,origin_country,contact_number,brand_email,brand_logo,active_status,created_at,updated_at and description",
-                example_value="id, brand_name,",
+                fields_list="id, category_name, parent_id, is_client_usable, category_icon, active_status, description, created_at, updated_at",
+                example_value="id, category_name, parent_id,",
             ),
         ],
         responses={
@@ -794,16 +799,14 @@ class RetrieveProductBrandAPIView(APIView):
                 message=f"{MODEL_NAME} Retrieve Successfully",
                 example={
                     "id": 1,
-                    "brand_name": "Care-Box",
-                    "origin_country": "Bangladesh",
-                    "web_url": "https://www.care-box.com",
-                    "brand_logo": "/brand/brand.jpg",
-                    "contact_number": "+8801981701810",
-                    "brand_email": "my@care-box.com",
-                    "description": "This category contains medicines.",
+                    "created_at": "2025-02-28T17:54:05.214668Z",
+                    "updated_at": "2025-02-28T18:42:40.617574Z",
+                    "category_name": "Medicine",
+                    "parent_id": 0,
+                    "is_client_usable": False,
+                    "category_icon": "/media/product/categories/medicine_c1FVxjf.png",
                     "active_status": "active",
-                    "created_at": "2025-02-25T18:35:10.267453Z",
-                    "updated_at": "2025-02-25T18:35:10.267609Z",
+                    "description": "This is short but amazing description",
                 },
             ),
             ResponseAPIDocumentation.get_400_response(),
@@ -900,7 +903,7 @@ class RetrieveProductBrandAPIView(APIView):
         except Exception as e:
             # Handle unexpected errors
             logger.error(
-                f"ERROR({self.__class__.__name__}):-------->>Error occurred while retrieving brand: {str(e)}",
+                f"ERROR({self.__class__.__name__}):-------->>Error occurred while retrieving category: {str(e)}",
             )
 
             # Unexpected error response
@@ -920,15 +923,15 @@ class RetrieveProductBrandAPIView(APIView):
             )
 
 
-# * <<---------------------*** PRODUCT BRAND DELETE API VIEW ***--------------------->>
+# * <<---------------------*** PRODUCT CATEGORY DELETE API VIEW ***--------------------->>
 @allowed_methods("DELETE")
-class DeleteProductBrandAPIView(APIView):
+class DeleteProductCategoryAPIView(APIView):
     """
     API endpoint to delete a specific product brand.
     """
 
     def __init__(self, **kwargs):
-        self.model_class = Brand
+        self.model_class = Category
         super().__init__(**kwargs)
 
     # API Documentation for deleting a product brand
@@ -963,7 +966,7 @@ class DeleteProductBrandAPIView(APIView):
                         client=ResponseClient.DEVELOPER,
                         description={
                             "content_not_found": f"{self.model_class.__name__} with id {id} not found.",
-                            "info": "Provide valid brand id to delete a specific brand",
+                            "info": "Provide valid brand id to delete a specific category",
                         },
                     ).model_dump(),
                     status=status.HTTP_404_NOT_FOUND,
@@ -990,7 +993,7 @@ class DeleteProductBrandAPIView(APIView):
         except Exception as e:
             # Internal Server Error Response Code
             logger.error(
-                f"ERROR({self.__class__.__name__}):----->>Error occurred while deleting the brand: {str(e)}"
+                f"ERROR({self.__class__.__name__}):----->>Error occurred while deleting the category: {str(e)}"
             )
             return Response(
                 ErrorResponse(
@@ -1000,7 +1003,7 @@ class DeleteProductBrandAPIView(APIView):
                     client=ResponseClient.DEVELOPER,
                     description={
                         "error": str(e),
-                        "info": "An unexpected error occurred while creating brand",
+                        "info": "An unexpected error occurred while creating category",
                         "message": "Please Contact with the support, we will get back to you soon",
                     },
                 ).model_dump(),

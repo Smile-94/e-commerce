@@ -46,12 +46,16 @@ class CategoryUpdateSerializer(ModelSerializer):
             "parent_id",
             "is_client_usable",
             "active_status",
+            "description",
+            "category_icon",
         )
         extra_kwargs = {
             "category_name": {"required": False},
             "parent_id": {"required": False},
             "is_client_usable": {"required": False},
             "active_status": {"required": False},
+            "description": {"required": False},
+            "category_icon": {"required": False},
         }
         read_only_fields = (
             "created_at",

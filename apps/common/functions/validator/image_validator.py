@@ -29,6 +29,7 @@ def get_validate_image_extensions(
                 ".bmp",
                 ".tiff",
                 ".webp",
+                ".svg",
             }
 
         invalid_images = []
