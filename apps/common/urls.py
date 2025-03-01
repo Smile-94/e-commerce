@@ -1,6 +1,11 @@
 from django.urls import include, path
 
-from apps.products.urls import brand_url, category_url, sub_category_url
+from apps.products.urls import (
+    brand_url,
+    category_url,
+    manufacturer_url,
+    sub_category_url,
+)
 
 # * <<-------------------------------------*** Product API Router ***-------------------------------------->>
 urlpatterns = [
@@ -9,4 +14,7 @@ urlpatterns = [
     path(
         "products/sub-category/", include(sub_category_url)
     ),  # product sub-category api router
+    path(
+        "products/manufacturer/", include(manufacturer_url)
+    ),  # product manufacturer api router
 ]

@@ -1,0 +1,21 @@
+meta {
+  name: List
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/products/manufacturer/product-category/list/?limit=10&offset=0&from_date=2025-03-01&to_date=2025-03-01&ordering=id&field_list=id, product_category&query=Food
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 10
+  offset: 0
+  from_date: 2025-03-01
+  to_date: 2025-03-01
+  ordering: id
+  field_list: id, product_category
+  query: Food
+}

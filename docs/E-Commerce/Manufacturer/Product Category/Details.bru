@@ -1,0 +1,15 @@
+meta {
+  name: Details
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/products/manufacturer/product-category/details/1/?field_list=id, product_category, 
+  body: none
+  auth: none
+}
+
+params:query {
+  field_list: id, product_category, 
+}
