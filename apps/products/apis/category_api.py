@@ -36,6 +36,7 @@ from apps.products.filters.category_filter import CategorySearchFilter
 
 # Models Import
 from apps.products.models.category_model import Category
+from apps.products.models.sub_category_model import SubCategory
 
 # Import Serializer
 from apps.products.serializers.category_serializer import (
@@ -69,6 +70,7 @@ class CreateProductCategoryAPIView(APIView):
         summary=f"API endpoint for creating product {MODEL_NAME}",
         description=f"Provide all necessary fields and values to create product {MODEL_NAME}",
         tags=[TAG_NAME],
+        request=CategorySerializer,
         responses={
             "201": SuccessResponse,
             "400": ErrorResponse,
@@ -133,11 +135,11 @@ class CreateProductCategoryAPIView(APIView):
                         ErrorResponse(
                             status=status.HTTP_400_BAD_REQUEST,
                             type=ErrorType.WARNING,
-                            message="Brand Name is required",
+                            message="Category Name is required",
                             client=ResponseClient.DEVELOPER,
                             description={
-                                "category_name": "brand_name missing",
-                                "info": "'brand_name' is required to create new brand object",
+                                "category_name": "category_name missing",
+                                "info": "'category_name' is required to create new category object",
                             },
                         ).model_dump(),
                         status=status.HTTP_400_BAD_REQUEST,
@@ -408,7 +410,7 @@ class UpdateProductCategoryAPIView(APIView):
                                 message=f"{self.model_class.__name__} name already exists",
                                 client=ResponseClient.USER,
                                 description={
-                                    "brand_name": f"{category_name}",
+                                    "category_name": f"{category_name}",
                                     "info": f"category name '{category_name}' already exists, try a different category_name",
                                 },
                             ).model_dump(),
@@ -448,7 +450,7 @@ class UpdateProductCategoryAPIView(APIView):
                     else:
                         # Log and respond with validation errors
                         logger.error(
-                            f"ERROR({self.__class__.__name__}))----->>Brand Update Serializer Error: {str(validated_data.errors)}",
+                            f"ERROR({self.__class__.__name__}))----->>category Update Serializer Error: {str(validated_data.errors)}",
                         )
                         # Error Response for data validation
                         return Response(
@@ -496,7 +498,7 @@ class UpdateProductCategoryAPIView(APIView):
         except Exception as e:
             # Catch any unexpected errors
             logger.error(
-                f"ERROR({self.__class__.__name__})----->>Error occurred while updating brand: {str(e)}",
+                f"ERROR({self.__class__.__name__})----->>Error occurred while updating category: {str(e)}",
             )
 
             # Return Response for any uneven errors
@@ -508,7 +510,7 @@ class UpdateProductCategoryAPIView(APIView):
                     client=ResponseClient.DEVELOPER,
                     description={
                         "error": str(e),
-                        "info": "An unexpected error occurred while creating brand",
+                        "info": "An unexpected error occurred while updating brand",
                         "message": "Please Contact with the support, we will get back to you soon",
                     },
                 ).model_dump(),
@@ -932,6 +934,7 @@ class DeleteProductCategoryAPIView(APIView):
 
     def __init__(self, **kwargs):
         self.model_class = Category
+        self.sub_category_model = SubCategory
         super().__init__(**kwargs)
 
     # API Documentation for deleting a product brand
@@ -955,6 +958,21 @@ class DeleteProductCategoryAPIView(APIView):
     # * ---->> HTTP DELETE Method to delete
     def delete(self, request, id, *args, **kwargs):
         try:
+            # Check category has any relation objects in sub-category.
+            if self.sub_category_model.objects.filter(category=id).exists():
+                return Response(
+                    ErrorResponse(
+                        status=status.HTTP_400_BAD_REQUEST,
+                        type=ErrorType.WARNING,
+                        message="Cannot delete a category with related sub-categories",
+                        client=ResponseClient.DEVELOPER,
+                        description={
+                            "related_objects": "category with id {id} has associated sub categories",
+                            "info": "Please delete the associated sub-category before deleting the category",
+                        },
+                    ).model_dump(),
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             # Check if the brand exists
             object = self.model_class.objects.filter(id=id).first()
             if not object:
@@ -1003,7 +1021,7 @@ class DeleteProductCategoryAPIView(APIView):
                     client=ResponseClient.DEVELOPER,
                     description={
                         "error": str(e),
-                        "info": "An unexpected error occurred while creating category",
+                        "info": f"An unexpected error occurred while deleting {MODEL_NAME}",
                         "message": "Please Contact with the support, we will get back to you soon",
                     },
                 ).model_dump(),

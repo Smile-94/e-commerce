@@ -1,0 +1,21 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/products/sub-category/create/
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  category: 1
+  sub_category_name: Tablet
+  parent_id: 0
+  is_client_usable: False
+  active_status: active
+  description: This is short but amazing description
+  sub_category_icon: @file()
+}

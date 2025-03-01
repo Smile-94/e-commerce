@@ -4,7 +4,7 @@ meta {
   seq: 2
 }
 
-patch {
+put {
   url: {{baseUrl}}/products/category/update/1/
   body: multipartForm
   auth: none
@@ -12,4 +12,5 @@ patch {
 
 body:multipart-form {
   category_icon: @file(/home/sazzad/Downloads/medicine.png)
+  category_name: Medicine
 }
