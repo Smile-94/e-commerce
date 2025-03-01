@@ -48,7 +48,7 @@ from apps.products.serializers.sub_category_serializer import (
 # API TAGS Name
 MODEL_NAME = "Sub-Category"
 URL_PREFIX = "sub-category"
-TAG_NAME = "Sub-sCategory [v1]"
+TAG_NAME = "Sub-Category [v1]"
 
 
 # * <<---------------------*** CREATE PRODUCT SUB-CATEGORY API VIEW ***--------------------->>
