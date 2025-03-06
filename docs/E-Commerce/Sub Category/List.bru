@@ -1,0 +1,22 @@
+meta {
+  name: List
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/products/sub-category/list/?limit=10&offset=0&from_date=2025-02-28&to_date=2025-03-1&ordering=id&category=1&field_list=id,sub_category_name,category,parent_id,is_client_usable,sub_category_icon,active_status,description,created_at,updated_at&query
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 10
+  offset: 0
+  from_date: 2025-02-28
+  to_date: 2025-03-1
+  ordering: id
+  category: 1
+  field_list: id,sub_category_name,category,parent_id,is_client_usable,sub_category_icon,active_status,description,created_at,updated_at
+  query: 
+}

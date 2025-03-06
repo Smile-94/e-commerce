@@ -1,0 +1,21 @@
+meta {
+  name: List
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/products/category/list/?limit=10&offset=0&from_date=2025-02-28&to_date=2025-02-28&ordering=-id&query=Medicine&field_list=id, category_name, parent_id, is_client_usable, category_icon, active_status, description, created_at, updated_at
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 10
+  offset: 0
+  from_date: 2025-02-28
+  to_date: 2025-02-28
+  ordering: -id
+  query: Medicine
+  field_list: id, category_name, parent_id, is_client_usable, category_icon, active_status, description, created_at, updated_at
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Update
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/products/brand/update/1/
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  brand_logo: @file(/home/sazzad/Downloads/brand.png)
+}
